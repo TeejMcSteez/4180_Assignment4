@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Assignment4</string>
+    <string name="landing_title">Create Profile</string>
+    <string name="landing_name">Name : </string>
+    <string name="landing_email">Email : </string>
+    <string name="landing_suid">Student ID : </string>
+    <string name="landing_department">Department : </string>
+    <string name="as_title">Select Avatar</string>
+    <string name="profile_title">Profile</string>
+    <!--  Roles  -->
+    <string name="CS">CS</string>
+    <string name="SIS">SIS</string>
+    <string name="BIO">BIO</string>
+    <string name="Other">Other</string>
+    <!--  Buttons  -->
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="update_button">Update</string>
+    <!--    -->
+    <string name="name_hint">Enter Name</string>
+    <string name="email_hint">Enter Email</string>
+    <string name="suid_hint">Enter Student ID</string>
+</resources>
