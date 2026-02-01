@@ -1,90 +1,91 @@
 package com.example.assignment4
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.assignment4.databinding.ActivityMainBinding
-import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.assignment4.databinding.ActivityEditProfileBinding
 
-class Landing : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+class EditProfile : AppCompatActivity() {
+    private lateinit var binding: ActivityEditProfileBinding
     private var selectedImageId: Int = R.drawable.select_image
     private var activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult(), { result ->
             if (result.resultCode == RESULT_OK && result.data != null) {
                 selectedImageId = result.data!!.getIntExtra("image_id", R.drawable.select_image)
-                binding.landingProfileImage.setImageResource(selectedImageId)
+                binding.editProfileImageView.setImageResource(selectedImageId)
             }
         })
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        title = "Create Profile"
+        title = "Update Profile"
+
+        var oldName: String = "null"
+        var oldEmail: String = "null"
+        var oldSuid: String = "null"
+        var oldDepartment: String = "null"
+        var oldImageId = R.drawable.select_image
 
         if (intent != null && intent.extras != null) {
             selectedImageId = intent.getIntExtra("image_id", R.drawable.select_image)
-            binding.landingProfileImage.setImageResource(selectedImageId)
+            oldImageId = selectedImageId
+            binding.editProfileImageView.setImageResource(selectedImageId)
             val name = intent.getStringExtra("name").toString()
-            if (name != "null") {
-                binding.nameInput.setText(name)
-            }
+            oldName = name
+            binding.editNameTextInputEditView.setText(name)
             val email = intent.getStringExtra("email").toString()
-            if (email != "null") {
-                binding.emailInput.setText(email)
-            }
+            oldEmail = email
+            binding.editEmailTextInputEditView.setText(email)
             val suid = intent.getStringExtra("suid").toString()
-            if (suid != "null") {
-                binding.suidInput.setText(suid)
-            }
-            val role = intent.getStringExtra("role")
-            if (role != "null") {
-                binding.depSelectRadioGroup.clearCheck()
-            }
+            oldSuid = suid
+            binding.editSuidTextInputEditText.setText(suid)
+            val role = intent.getStringExtra("role").toString()
+            oldDepartment = role
+            binding.editRadioGroup.clearCheck()
             when (role) {
-                "CS" -> binding.CSRadioButton.isChecked = true
-                "SIS" -> binding.SISRadioButton.isChecked = true
-                "BIO" -> binding.BioRadioButton.isChecked = true
-                "Other" -> binding.OtherRadioButton.isChecked = true
-                else -> binding.depSelectRadioGroup.clearCheck()
+                "CS" -> binding.editCSRadioButton.isChecked = true
+                "SIS" -> binding.editSisRadioButton.isChecked = true
+                "BIO" -> binding.editBioRadioButton.isChecked = true
+                "Other" -> binding.editOtherRadioButton.isChecked = true
+                else -> binding.editRadioGroup.clearCheck()
             }
         }
 
-        binding.landingProfileImage.setOnClickListener {
+        binding.editProfileImageView.setOnClickListener {
             val sa = Intent(this, AvatarSelect::class.java)
-            if (selectedImageId != R.drawable.select_image) {
-                sa.putExtra("image_id", selectedImageId)
-            }
             activityResultLauncher.launch(sa)
         }
 
-        binding.landingSaveButton.setOnClickListener {
+        binding.editSaveButton.setOnClickListener {
 
-            val name = binding.nameInput.text.toString()
+            val name = binding.editNameTextInputEditView.text.toString()
             if (name == "null" || name.trim() == "") {
                 Toast.makeText(this, "Name is blank", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            val email = binding.emailInput.text.toString()
+            val email = binding.editEmailTextInputEditView.text.toString()
             if (email == "null" || email.trim() == "") {
                 Toast.makeText(this, "Email is blank", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            val suid = binding.suidInput.text.toString()
+            val suid = binding.editSuidTextInputEditText.text.toString()
             if (suid ==  "null" || suid.trim() == "") {
                 Toast.makeText(this, "Student ID is blank", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            if (binding.depSelectRadioGroup.checkedRadioButtonId == -1) {
+            if (binding.editRadioGroup.checkedRadioButtonId == -1) {
                 Toast.makeText(this, "Please select a Department for the profile", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-            val dep = findViewById<RadioButton>(binding.depSelectRadioGroup.checkedRadioButtonId).text.toString()
+            val dep = findViewById<RadioButton>(binding.editRadioGroup.checkedRadioButtonId).text.toString()
             if (dep == "null" || email.trim() == "") {
                 Toast.makeText(this, "Please select a Department for the profile", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
@@ -95,11 +96,21 @@ class Landing : AppCompatActivity() {
             }
             val profileIntent = Intent(this, ProfileDisplay::class.java)
             profileIntent.putExtra("name", name)
-            profileIntent.putExtra("email", email)
-            profileIntent.putExtra("suid", suid)
-            profileIntent.putExtra("role", dep)
-            profileIntent.putExtra("image_id", selectedImageId)
+                .putExtra("email", email)
+                .putExtra("suid", suid)
+                .putExtra("role", dep)
+                .putExtra("image_id", selectedImageId)
             startActivity(profileIntent)
+        }
+
+        binding.editCancelButton.setOnClickListener {
+            val cancelIntent = Intent(this, ProfileDisplay::class.java)
+            cancelIntent.putExtra("name", oldName)
+                .putExtra("email", oldEmail)
+                .putExtra("suid", oldSuid)
+                .putExtra("role", oldDepartment)
+                .putExtra("image_id", oldImageId)
+            startActivity(cancelIntent)
         }
     }
 }

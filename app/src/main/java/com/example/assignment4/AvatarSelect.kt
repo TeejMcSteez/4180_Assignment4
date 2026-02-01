@@ -38,6 +38,10 @@ class AvatarSelect : AppCompatActivity() {
 
         binding.cancelButton.setOnClickListener {
             val profileIntent = Intent(this, Landing::class.java)
+            if (intent != null && intent.extras != null) {
+                val imageId = intent.getIntExtra("image_id", R.drawable.select_image)
+                profileIntent.putExtra("image_id", imageId)
+            }
             startActivity(profileIntent)
         }
 
