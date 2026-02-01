@@ -61,6 +61,9 @@ class EditProfile : AppCompatActivity() {
 
         binding.editProfileImageView.setOnClickListener {
             val sa = Intent(this, AvatarSelect::class.java)
+            if (selectedImageId != R.drawable.select_image) {
+                sa.putExtra("image_id", selectedImageId)
+            }
             activityResultLauncher.launch(sa)
         }
 
