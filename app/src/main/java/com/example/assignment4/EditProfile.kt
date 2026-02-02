@@ -8,30 +8,31 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.assignment4.databinding.ActivityEditProfileBinding
 
 class EditProfile : AppCompatActivity() {
     private lateinit var binding: ActivityEditProfileBinding
     private var selectedImageId: Int = R.drawable.select_image
     private var activityResultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult(), { result ->
-            if (result.resultCode == RESULT_OK && result.data != null) {
-                selectedImageId = result.data!!.getIntExtra("image_id", R.drawable.select_image)
-                binding.editProfileImageView.setImageResource(selectedImageId)
-            }
-        })
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK && result.data != null) {
+            selectedImageId = result.data!!.getIntExtra("image_id", R.drawable.select_image)
+            binding.editProfileImageView.setImageResource(selectedImageId)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
         title = "Update Profile"
 
-        var oldName: String = "null"
-        var oldEmail: String = "null"
-        var oldSuid: String = "null"
-        var oldDepartment: String = "null"
+        var oldName = "null"
+        var oldEmail = "null"
+        var oldSuid = "null"
+        var oldDepartment = "null"
         var oldImageId = R.drawable.select_image
 
         if (intent != null && intent.extras != null) {
@@ -104,6 +105,7 @@ class EditProfile : AppCompatActivity() {
                 .putExtra("role", dep)
                 .putExtra("image_id", selectedImageId)
             startActivity(profileIntent)
+            finish()
         }
 
         binding.editCancelButton.setOnClickListener {
@@ -114,6 +116,7 @@ class EditProfile : AppCompatActivity() {
                 .putExtra("role", oldDepartment)
                 .putExtra("image_id", oldImageId)
             startActivity(cancelIntent)
+            finish()
         }
     }
 }

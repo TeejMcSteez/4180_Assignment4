@@ -85,7 +85,7 @@ class Landing : AppCompatActivity() {
                 return@setOnClickListener
             }
             val dep = findViewById<RadioButton>(binding.depSelectRadioGroup.checkedRadioButtonId).text.toString()
-            if (dep == "null" || email.trim() == "") {
+            if (dep == "null" || dep.trim() == "") {
                 Toast.makeText(this, "Please select a Department for the profile", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
@@ -100,6 +100,7 @@ class Landing : AppCompatActivity() {
             profileIntent.putExtra("role", dep)
             profileIntent.putExtra("image_id", selectedImageId)
             startActivity(profileIntent)
+            finish()
         }
     }
 }
