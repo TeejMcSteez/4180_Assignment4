@@ -7,6 +7,7 @@
     <string name="landing_department">Department : </string>
     <string name="as_title">Select Avatar</string>
     <string name="profile_title">Profile</string>
+    <string name="update_title">Update Profile</string>
     <!--  Roles  -->
     <string name="CS">CS</string>
     <string name="SIS">SIS</string>
@@ -16,7 +17,7 @@
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
     <string name="update_button">Update</string>
-    <!--    -->
+    <!--  Hint Values  -->
     <string name="name_hint">Enter Name</string>
     <string name="email_hint">Enter Email</string>
     <string name="suid_hint">Enter Student ID</string>

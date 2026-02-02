@@ -30,7 +30,7 @@ class ProfileDisplay : AppCompatActivity() {
         }
 
         binding.updateButton.setOnClickListener {
-            val landingIntent = Intent(this, Landing::class.java)
+            val landingIntent = Intent(this, EditProfile::class.java)
             landingIntent.putExtra("name", binding.nameVal.text.toString())
             landingIntent.putExtra("email", binding.emailVal.text.toString())
             landingIntent.putExtra("suid", binding.suidVal.text.toString())
