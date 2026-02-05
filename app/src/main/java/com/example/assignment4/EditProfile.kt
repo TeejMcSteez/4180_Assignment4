@@ -29,93 +29,51 @@ class EditProfile : AppCompatActivity() {
         setContentView(binding.root)
         title = "Update Profile"
 
-        var oldName = "null"
-        var oldEmail = "null"
-        var oldSuid = "null"
-        var oldDepartment = "null"
-        var oldImageId = R.drawable.select_image
-
         if (intent != null && intent.extras != null) {
-            selectedImageId = intent.getIntExtra("image_id", R.drawable.select_image)
-            oldImageId = selectedImageId
-            binding.editProfileImageView.setImageResource(selectedImageId)
-            val name = intent.getStringExtra("name").toString()
-            oldName = name
-            binding.editNameTextInputEditView.setText(name)
-            val email = intent.getStringExtra("email").toString()
-            oldEmail = email
-            binding.editEmailTextInputEditView.setText(email)
-            val suid = intent.getStringExtra("suid").toString()
-            oldSuid = suid
-            binding.editSuidTextInputEditText.setText(suid)
-            val role = intent.getStringExtra("role").toString()
-            oldDepartment = role
-            binding.editRadioGroup.clearCheck()
-            when (role) {
-                "CS" -> binding.editCSRadioButton.isChecked = true
-                "SIS" -> binding.editSisRadioButton.isChecked = true
-                "BIO" -> binding.editBioRadioButton.isChecked = true
-                "Other" -> binding.editOtherRadioButton.isChecked = true
-                else -> binding.editRadioGroup.clearCheck()
+            val user = intent.getParcelableExtra<Student>("user")
+            if (user != null) {
+                selectedImageId = user.imageId
+                binding.editProfileImageView.setImageResource(selectedImageId)
+                binding.editNameTextInputEditView.setText(user.name)
+                binding.editEmailTextInputEditView.setText(user.email)
+                binding.editSuidTextInputEditText.setText(user.suid)
+                when (user.role) {
+                    "CS" -> binding.editCSRadioButton.isChecked = true
+                    "SIS" -> binding.editSisRadioButton.isChecked = true
+                    "BIO" -> binding.editBioRadioButton.isChecked = true
+                    "Other" -> binding.editOtherRadioButton.isChecked = true
+                }
             }
         }
 
         binding.editProfileImageView.setOnClickListener {
             val sa = Intent(this, AvatarSelect::class.java)
-            if (selectedImageId != R.drawable.select_image) {
-                sa.putExtra("image_id", selectedImageId)
-            }
+            sa.putExtra("image_id", selectedImageId)
             activityResultLauncher.launch(sa)
         }
 
         binding.editSaveButton.setOnClickListener {
-
             val name = binding.editNameTextInputEditView.text.toString()
-            if (name == "null" || name.trim() == "") {
-                Toast.makeText(this, "Name is blank", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
             val email = binding.editEmailTextInputEditView.text.toString()
-            if (email == "null" || email.trim() == "") {
-                Toast.makeText(this, "Email is blank", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
             val suid = binding.editSuidTextInputEditText.text.toString()
-            if (suid ==  "null" || suid.trim() == "") {
-                Toast.makeText(this, "Student ID is blank", Toast.LENGTH_LONG).show()
+            
+            if (name.isBlank() || email.isBlank() || suid.isBlank() || 
+                binding.editRadioGroup.checkedRadioButtonId == -1) {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            if (binding.editRadioGroup.checkedRadioButtonId == -1) {
-                Toast.makeText(this, "Please select a Department for the profile", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
+
             val dep = findViewById<RadioButton>(binding.editRadioGroup.checkedRadioButtonId).text.toString()
-            if (dep == "null" || email.trim() == "") {
-                Toast.makeText(this, "Please select a Department for the profile", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-            if (selectedImageId == R.drawable.select_image) {
-                Toast.makeText(this, "Please select a profile image", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-            val profileIntent = Intent(this, ProfileDisplay::class.java)
-            profileIntent.putExtra("name", name)
-                .putExtra("email", email)
-                .putExtra("suid", suid)
-                .putExtra("role", dep)
-                .putExtra("image_id", selectedImageId)
-            startActivity(profileIntent)
+            val user = Student(name, email, suid, dep, selectedImageId)
+            
+            val resultIntent = Intent()
+            resultIntent.putExtra("user", user)
+            setResult(RESULT_OK, resultIntent)
             finish()
         }
 
         binding.editCancelButton.setOnClickListener {
-            val cancelIntent = Intent(this, ProfileDisplay::class.java)
-            cancelIntent.putExtra("name", oldName)
-                .putExtra("email", oldEmail)
-                .putExtra("suid", oldSuid)
-                .putExtra("role", oldDepartment)
-                .putExtra("image_id", oldImageId)
-            startActivity(cancelIntent)
+            setResult(RESULT_CANCELED)
             finish()
         }
     }

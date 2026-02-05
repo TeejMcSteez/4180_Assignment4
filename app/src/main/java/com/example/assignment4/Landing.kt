@@ -1,7 +1,6 @@
 package com.example.assignment4
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.RadioButton
 import android.widget.Toast
@@ -9,7 +8,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.assignment4.databinding.ActivityMainBinding
-import androidx.core.net.toUri
 
 class Landing : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -28,30 +26,19 @@ class Landing : AppCompatActivity() {
         title = "Create Profile"
 
         if (intent != null && intent.extras != null) {
-            selectedImageId = intent.getIntExtra("image_id", R.drawable.select_image)
-            binding.landingProfileImage.setImageResource(selectedImageId)
-            val name = intent.getStringExtra("name").toString()
-            if (name != "null") {
-                binding.nameInput.setText(name)
-            }
-            val email = intent.getStringExtra("email").toString()
-            if (email != "null") {
-                binding.emailInput.setText(email)
-            }
-            val suid = intent.getStringExtra("suid").toString()
-            if (suid != "null") {
-                binding.suidInput.setText(suid)
-            }
-            val role = intent.getStringExtra("role")
-            if (role != "null") {
-                binding.depSelectRadioGroup.clearCheck()
-            }
-            when (role) {
-                "CS" -> binding.CSRadioButton.isChecked = true
-                "SIS" -> binding.SISRadioButton.isChecked = true
-                "BIO" -> binding.BioRadioButton.isChecked = true
-                "Other" -> binding.OtherRadioButton.isChecked = true
-                else -> binding.depSelectRadioGroup.clearCheck()
+            val user = intent.getParcelableExtra<Student>("user")
+            if (user != null) {
+                selectedImageId = user.imageId
+                binding.nameInput.setText(user.name)
+                binding.emailInput.setText(user.email)
+                binding.suidInput.setText(user.suid)
+                when (user.role) {
+                    "CS" -> binding.CSRadioButton.isChecked = true
+                    "SIS" -> binding.SISRadioButton.isChecked = true
+                    "BIO" -> binding.BioRadioButton.isChecked = true
+                    "Other" -> binding.OtherRadioButton.isChecked = true
+                    else -> binding.depSelectRadioGroup.clearCheck()
+                }
             }
         }
 
@@ -93,12 +80,9 @@ class Landing : AppCompatActivity() {
                 Toast.makeText(this, "Please select a profile image", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
+            val user = Student(name, email, suid, dep, selectedImageId)
             val profileIntent = Intent(this, ProfileDisplay::class.java)
-            profileIntent.putExtra("name", name)
-            profileIntent.putExtra("email", email)
-            profileIntent.putExtra("suid", suid)
-            profileIntent.putExtra("role", dep)
-            profileIntent.putExtra("image_id", selectedImageId)
+            profileIntent.putExtra("user", user)
             startActivity(profileIntent)
             finish()
         }
